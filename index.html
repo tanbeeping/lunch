@@ -10,8 +10,8 @@
 
         /* EASY THEME CUSTOMIZATION HERE */
         :root {
-            --primary: #6bbc37;       /* Your brand green */
-            --primary-soft: #f0f9eb;  /* Soft version for display backgrounds */
+            --primary: #549e24;       /* Your main colour */
+            --primary-soft: #c5e7b2;  /* Soft version for display backgrounds */
             --bg-color: #dcedc8;      /* Light tinted background */
             --accent: #000000;
         }
@@ -147,7 +147,7 @@
                     <span class="text-[10px] font-black uppercase opacity-60">Live: ${foodData.length} Places Loaded</span>`;
                 
                 document.getElementById('spin-btn').disabled = false;
-                document.getElementById('chosen-name').innerText = "Ready to eat?";
+                document.getElementById('chosen-name').innerText = "Makan?";
             } catch (err) {
                 document.getElementById('chosen-name').innerText = "Sync Error!";
             }
