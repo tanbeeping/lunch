@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunch Loop 🍕</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
+        body { font-family: 'Outfit', sans-serif; background-color: #A5B4FC; }
+        .neo-card { background: white; border: 4px solid black; box-shadow: 8px 8px 0px 0px #000; }
+        .neo-button { border: 3px solid black; box-shadow: 4px 4px 0px 0px #000; transition: all 0.1s; }
+        .neo-button:active { box-shadow: 0px 0px 0px 0px #000; transform: translate(4px, 4px); }
+        .loading-shimmer { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full">
+        <div class="neo-card rounded-3xl p-8 mb-6">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-900 uppercase tracking-tighter italic leading-none">Lunch Loop</h1>
+                <div id="status-dot" class="inline-flex items-center gap-2 mt-2">
+                    <span class="w-2 h-2 bg-orange-400 rounded-full loading-shimmer"></span>
+                    <span class="text-[10px] font-black uppercase opacity-60">Syncing with Sheet...</span>
+                </div>
+            </header>
+
+            <div id="display-container" class="bg-yellow-100 border-4 border-black rounded-2xl p-6 mb-8 min-h-[160px] flex flex-col items-center justify-center text-center">
+                <div id="chosen-name" class="text-3xl font-black leading-tight mb-2">Feeding Data...</div>
+                <div id="meta-tags" class="flex flex-wrap justify-center gap-2 mt-2 opacity-0 transition-opacity">
+                    <span id="tag-halal" class="bg-green-400 border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase"></span>
+                    <span id="tag-loc" class="bg-blue-400 border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase"></span>
+                    <span id="tag-type" class="bg-pink-400 border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase"></span>
+                </div>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <div class="flex items-center gap-4">
+                    <label class="w-20 font-black text-xs uppercase">Where?</label>
+                    <select id="f-loc" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm">
+                        <option value="any">Everywhere</option>
+                        <option value="Campus">On Campus</option>
+                        <option value="Outside">Outside</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-4">
+                    <label class="w-20 font-black text-xs uppercase">Cuisine</label>
+                    <select id="f-type" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm">
+                        <option value="any">Anything</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Korean">Korean</option>
+                        <option value="Thai">Thai</option>
+                        <option value="Western">Western</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-4">
+                    <label class="w-20 font-black text-xs uppercase">Halal?</label>
+                    <select id="f-halal" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm">
+                        <option value="any">Any</option>
+                        <option value="yes">Halal Only</option>
+                        <option value="no">Non-Halal</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="spin-btn" disabled onclick="spin()" class="neo-button w-full bg-rose-500 text-white font-black py-4 rounded-xl text-xl uppercase tracking-widest opacity-50 cursor-not-allowed">
+                Wait for Data...
+            </button>
+        </div>
+
+        <a href="https://docs.google.com/spreadsheets/d/1LPyKTNkDk7E5AXYUWGutoHHZvDzhpxtkmDbbSTKPHtw/edit" target="_blank" class="neo-card bg-emerald-300 p-4 rounded-2xl flex items-center justify-between hover:bg-emerald-400 transition-colors">
+            <span class="font-black text-sm uppercase">Add a new spot to the sheet</span>
+            <span class="font-black">↗</span>
+        </a>
+    </div>
+
+    <script>
+        // 1. PASTE YOUR CSV LINK HERE
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8rEkvss_C8OAw0mcM-Gdjk_1u-3KvxYKjAB7vBi5m6cfn-5qtoee2aozKpY4Ib1PqVPxb3rySDGUa/pub?gid=0&single=true&output=csv";
+        
+        let foodData = [];
+
+async function init() {
+    try {
+        // Adding a timestamp cache-buster to ensure we get fresh data
+        const response = await fetch(SHEET_CSV_URL + "&cache=" + Date.now());
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const csvText = await response.text();
+        
+        // Split by lines and handle both \n and \r\n
+        const rows = csvText.split(/\r?\n/).slice(1); 
+        
+        foodData = rows.map(row => {
+            // This regex handles commas inside quotes if a colleague types "Pasta, Pizza"
+            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            
+            return {
+                name: cols[0]?.replace(/^"|"$/g, '').trim(),
+                loc: cols[1]?.replace(/^"|"$/g, '').trim(),
+                type: cols[2]?.replace(/^"|"$/g, '').trim(),
+                halal: cols[3]?.replace(/^"|"$/g, '').trim().toLowerCase()
+            };
+        }).filter(item => item.name && item.name.length > 1);
+
+        if (foodData.length === 0) throw new Error('No data found in sheet');
+
+        // Update UI state
+        document.getElementById('status-dot').innerHTML = `
+            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+            <span class="text-[10px] font-black uppercase opacity-60">Live: ${foodData.length} Places Loaded</span>`;
+        
+        const btn = document.getElementById('spin-btn');
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        btn.innerText = "Spin the Loop";
+        document.getElementById('chosen-name').innerText = "Ready to eat?";
+
+    } catch (err) {
+        console.error("Fetch Error:", err);
+        document.getElementById('chosen-name').innerText = "Sync Error!";
+        // Show a more helpful message
+        document.getElementById('status-dot').innerHTML = `
+            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+            <span class="text-[10px] font-black uppercase text-red-600">Check Publication Settings</span>`;
+    }
+}
+
+        function spin() {
+            const fLoc = document.getElementById('f-loc').value;
+            const fType = document.getElementById('f-type').value;
+            const fHalal = document.getElementById('f-halal').value;
+
+            const pool = foodData.filter(item => {
+                const lMatch = fLoc === 'any' || item.loc === fLoc;
+                const hMatch = fHalal === 'any' || item.halal === fHalal;
+                // Cuisine Check (Handles single or multiple tags)
+                const tMatch = fType === 'any' || item.type.toLowerCase().includes(fType.toLowerCase());
+                return lMatch && hMatch && tMatch;
+            });
+
+            const display = document.getElementById('chosen-name');
+            const meta = document.getElementById('meta-tags');
+
+            if (pool.length === 0) {
+                display.innerText = "No Matches! 😭";
+                meta.style.opacity = "0";
+                return;
+            }
+
+            let count = 0;
+            const timer = setInterval(() => {
+                display.innerText = pool[Math.floor(Math.random() * pool.length)].name;
+                count++;
+                if (count > 12) {
+                    clearInterval(timer);
+                    const final = pool[Math.floor(Math.random() * pool.length)];
+                    display.innerText = final.name;
+                    document.getElementById('tag-halal').innerText = final.halal === 'yes' ? 'Halal' : 'Non-Halal';
+                    document.getElementById('tag-loc').innerText = final.loc;
+                    document.getElementById('tag-type').innerText = final.type;
+                    meta.style.opacity = "1";
+                }
+            }, 60);
+        }
+
+        init();
+    </script>
+</body>
+</html>
