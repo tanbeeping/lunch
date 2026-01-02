@@ -7,10 +7,53 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background-color: #A5B4FC; }
-        .neo-card { background: white; border: 4px solid black; box-shadow: 8px 8px 0px 0px #000; }
-        .neo-button { border: 3px solid black; box-shadow: 4px 4px 0px 0px #000; transition: all 0.1s; }
-        .neo-button:active { box-shadow: 0px 0px 0px 0px #000; transform: translate(4px, 4px); }
+
+        /* EASY THEME CUSTOMIZATION HERE */
+        :root {
+            --primary: #6bbc37;       /* Your brand green */
+            --primary-soft: #f0f9eb;  /* Soft version for display backgrounds */
+            --bg-color: #dcedc8;      /* Light tinted background */
+            --accent: #000000;
+        }
+
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg-color); 
+        }
+
+        .neo-card { 
+            background: white; 
+            border: 4px solid var(--accent); 
+            box-shadow: 8px 8px 0px 0px var(--accent); 
+        }
+
+        .neo-button { 
+            background-color: var(--primary);
+            color: white;
+            border: 3px solid var(--accent); 
+            box-shadow: 4px 4px 0px 0px var(--accent); 
+            transition: all 0.1s; 
+        }
+
+        .neo-button:active:not(:disabled) { 
+            box-shadow: 0px 0px 0px 0px var(--accent); 
+            transform: translate(4px, 4px); 
+        }
+
+        .neo-button:disabled {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .tag-base {
+            border: 2px solid var(--accent);
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
         .loading-shimmer { animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
@@ -20,19 +63,19 @@
     <div class="max-w-md w-full">
         <div class="neo-card rounded-3xl p-8 mb-6">
             <header class="text-center mb-8">
-                <h1 class="text-4xl font-900 uppercase tracking-tighter italic leading-none">Eh, Eat What?</h1>
+                <h1 class="text-4xl font-900 uppercase tracking-tighter italic leading-none" style="color: var(--accent);">Eh, Eat What?</h1>
                 <div id="status-dot" class="inline-flex items-center gap-2 mt-2">
-                    <span class="w-2 h-2 bg-orange-400 rounded-full loading-shimmer"></span>
-                    <span class="text-[10px] font-black uppercase opacity-60">Syncing with Sheet...</span>
+                    <span class="w-2 h-2 bg-gray-400 rounded-full loading-shimmer"></span>
+                    <span class="text-[10px] font-black uppercase opacity-60">Syncing...</span>
                 </div>
             </header>
 
-            <div id="display-container" class="bg-yellow-100 border-4 border-black rounded-2xl p-6 mb-8 min-h-[160px] flex flex-col items-center justify-center text-center">
+            <div id="display-container" class="border-4 border-black rounded-2xl p-6 mb-8 min-h-[160px] flex flex-col items-center justify-center text-center" style="background-color: var(--primary-soft);">
                 <div id="chosen-name" class="text-3xl font-black leading-tight mb-2">Feeding Data...</div>
                 <div id="meta-tags" class="flex flex-wrap justify-center gap-2 mt-2 opacity-0 transition-opacity">
-                    <span id="tag-halal" class="bg-green-400 border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase"></span>
-                    <span id="tag-loc" class="bg-blue-400 border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase"></span>
-                    <span id="tag-type" class="bg-pink-400 border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase"></span>
+                    <span id="tag-halal" class="tag-base bg-white"></span>
+                    <span id="tag-loc" class="tag-base bg-white"></span>
+                    <span id="tag-type" class="tag-base bg-white"></span>
                 </div>
             </div>
 
@@ -57,7 +100,7 @@
                     </select>
                 </div>
                 <div class="flex items-center gap-4">
-                    <label class="w-20 font-black text-xs uppercase leading-tight">Dietary Preferences</label>
+                    <label class="w-20 font-black text-xs uppercase leading-tight">Dietary</label>
                     <select id="f-diet" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm">
                         <option value="any">No Preference</option>
                         <option value="halal">Halal Only</option>
@@ -66,20 +109,20 @@
                 </div>
             </div>
 
-            <button id="spin-btn" disabled onclick="spin()" class="neo-button w-full bg-rose-500 text-white font-black py-4 rounded-xl text-xl uppercase tracking-widest opacity-50 cursor-not-allowed">
-                Wait for Data...
+            <button id="spin-btn" disabled onclick="spin()" class="neo-button w-full py-4 rounded-xl uppercase tracking-widest">
+                <div class="text-2xl font-black mb-0">Spin Now</div>
+                <div class="text-[10px] opacity-90 font-bold">(before the committee decides)</div>
             </button>
         </div>
 
-        <a href="https://docs.google.com/spreadsheets/d/1LPyKTNkDk7E5AXYUWGutoHHZvDzhpxtkmDbbSTKPHtw/edit" target="_blank" class="neo-card bg-emerald-300 p-4 rounded-2xl flex items-center justify-between hover:bg-emerald-400 transition-colors">
-            <span class="font-black text-sm uppercase">Add a new spot to the sheet</span>
-            <span class="font-black">↗</span>
+        <a href="https://docs.google.com/spreadsheets/d/1LPyKTNkDk7E5AXYUWGutoHHZvDzhpxtkmDbbSTKPHtw/edit" target="_blank" class="neo-card p-4 rounded-2xl flex items-center justify-between hover:opacity-90 transition-opacity" style="background-color: var(--primary);">
+            <span class="font-black text-sm uppercase text-white">Add a new spot to the sheet</span>
+            <span class="font-black text-white">↗</span>
         </a>
     </div>
 
     <script>
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8rEkvss_C8OAw0mcM-Gdjk_1u-3KvxYKjAB7vBi5m6cfn-5qtoee2aozKpY4Ib1PqVPxb3rySDGUa/pub?gid=0&single=true&output=csv";
-        
         let foodData = [];
 
         async function init() {
@@ -95,18 +138,15 @@
                         name: cols[0]?.replace(/^"|"$/g, '').trim(),
                         loc: cols[1]?.replace(/^"|"$/g, '').trim(),
                         type: cols[2]?.replace(/^"|"$/g, '').trim(),
-                        diet: cols[3]?.replace(/^"|"$/g, '').trim().toLowerCase() // This is now 'halal' or 'vegetarian'
+                        diet: cols[3]?.replace(/^"|"$/g, '').trim().toLowerCase()
                     };
                 }).filter(item => item.name && item.name.length > 1);
 
                 document.getElementById('status-dot').innerHTML = `
-                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span class="w-2 h-2 bg-green-600 rounded-full"></span>
                     <span class="text-[10px] font-black uppercase opacity-60">Live: ${foodData.length} Places Loaded</span>`;
                 
-                const btn = document.getElementById('spin-btn');
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                btn.innerText = "Spin before the committee decides";
+                document.getElementById('spin-btn').disabled = false;
                 document.getElementById('chosen-name').innerText = "Ready to eat?";
             } catch (err) {
                 document.getElementById('chosen-name').innerText = "Sync Error!";
@@ -119,17 +159,9 @@
             const fDiet = document.getElementById('f-diet').value;
 
             const pool = foodData.filter(item => {
-                // 1. Location Match
                 const lMatch = fLoc === 'any' || item.loc === fLoc;
-                
-                // 2. Cuisine Match
                 const tMatch = fType === 'any' || item.type.toLowerCase().includes(fType.toLowerCase());
-                
-                // 3. UPDATED: Dietary Match (Supports "Halal, Vegetarian")
-                // If "any" is selected, show everything.
-                // If a specific diet is selected, check if that word exists in the cell.
                 const dMatch = fDiet === 'any' || (item.diet && item.diet.toLowerCase().includes(fDiet.toLowerCase()));
-
                 return lMatch && tMatch && dMatch;
             });
 
@@ -151,10 +183,8 @@
                     const final = pool[Math.floor(Math.random() * pool.length)];
                     display.innerText = final.name;
                     
-                    // UI Update: Show the dietary tags found in the sheet
                     const dietTag = document.getElementById('tag-halal');
                     if (final.diet && final.diet.trim() !== "") {
-                        // Capitalize first letter of each word for the UI
                         dietTag.innerText = final.diet.split(',').map(s => s.trim().charAt(0).toUpperCase() + s.trim().slice(1)).join(' & ');
                         dietTag.style.display = "inline-block";
                     } else {
