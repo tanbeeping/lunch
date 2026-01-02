@@ -122,14 +122,13 @@
                 // 1. Location Match
                 const lMatch = fLoc === 'any' || item.loc === fLoc;
                 
-                // 2. Cuisine Match (Check if the string exists within the cell)
+                // 2. Cuisine Match
                 const tMatch = fType === 'any' || item.type.toLowerCase().includes(fType.toLowerCase());
                 
-                // 3. THE FIX: Dietary Match
-                // If "any" is selected, everyone is invited.
-                // If "halal" is selected, only show items that strictly say "halal".
-                // If "vegetarian" is selected, only show items that strictly say "vegetarian".
-                const dMatch = fDiet === 'any' || item.diet === fDiet;
+                // 3. UPDATED: Dietary Match (Supports "Halal, Vegetarian")
+                // If "any" is selected, show everything.
+                // If a specific diet is selected, check if that word exists in the cell.
+                const dMatch = fDiet === 'any' || (item.diet && item.diet.toLowerCase().includes(fDiet.toLowerCase()));
 
                 return lMatch && tMatch && dMatch;
             });
@@ -152,10 +151,11 @@
                     const final = pool[Math.floor(Math.random() * pool.length)];
                     display.innerText = final.name;
                     
-                    // UI FIX: Only show the dietary tag if it's not empty
+                    // UI Update: Show the dietary tags found in the sheet
                     const dietTag = document.getElementById('tag-halal');
-                    if (final.diet && final.diet !== "") {
-                        dietTag.innerText = final.diet.charAt(0).toUpperCase() + final.diet.slice(1);
+                    if (final.diet && final.diet.trim() !== "") {
+                        // Capitalize first letter of each word for the UI
+                        dietTag.innerText = final.diet.split(',').map(s => s.trim().charAt(0).toUpperCase() + s.trim().slice(1)).join(' & ');
                         dietTag.style.display = "inline-block";
                     } else {
                         dietTag.style.display = "none";
