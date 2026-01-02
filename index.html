@@ -8,11 +8,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
 
-        /* EASY THEME CUSTOMIZATION HERE */
         :root {
-            --primary: #549e24;       /* Your main colour */
-            --primary-soft: #c5e7b2;  /* Soft version for display backgrounds */
-            --bg-color: #dcedc8;      /* Light tinted background */
+            --primary: #549e24;
+            --primary-soft: #c5e7b2;
+            --bg-color: #dcedc8;
             --accent: #000000;
         }
 
@@ -28,7 +27,7 @@
         }
 
         .neo-button { 
-            background-color: var(--primary);
+            background-color: var(--primary); 
             color: white;
             border: 3px solid var(--accent); 
             box-shadow: 4px 4px 0px 0px var(--accent); 
@@ -40,19 +39,30 @@
             transform: translate(4px, 4px); 
         }
 
-        .neo-button:disabled {
-            background-color: #e0e0e0;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
         .tag-base {
-            border: 2px solid var(--accent);
+            border: 2px solid var(--accent); 
             padding: 2px 8px;
-            font-size: 10px;
-            font-weight: 900;
+            font-size: 10px; 
+            font-weight: 900; 
             text-transform: uppercase;
         }
+
+        /* Darker Overlay Style */
+        .modal-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Darker backdrop */
+            backdrop-filter: blur(4px);
+            z-index: 50; 
+            align-items: center; 
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
 
         .loading-shimmer { animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
@@ -63,7 +73,7 @@
     <div class="max-w-md w-full">
         <div class="neo-card rounded-3xl p-8 mb-6">
             <header class="text-center mb-8">
-                <h1 class="text-4xl font-900 uppercase tracking-tighter italic leading-none" style="color: var(--accent);">Eh, Eat What?</h1>
+                <h1 class="text-4xl font-900 uppercase tracking-tighter italic leading-none">Eh, Eat What?</h1>
                 <div id="status-dot" class="inline-flex items-center gap-2 mt-2">
                     <span class="w-2 h-2 bg-gray-400 rounded-full loading-shimmer"></span>
                     <span class="text-[10px] font-black uppercase opacity-60">Syncing...</span>
@@ -82,7 +92,7 @@
             <div class="space-y-4 mb-8">
                 <div class="flex items-center gap-4">
                     <label class="w-20 font-black text-xs uppercase">Where</label>
-                    <select id="f-loc" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm">
+                    <select id="f-loc" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm outline-none">
                         <option value="any">Anywhere</option>
                         <option value="Campus">Campus</option>
                         <option value="Outside">Outside</option>
@@ -90,7 +100,7 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <label class="w-20 font-black text-xs uppercase">Cuisine</label>
-                    <select id="f-type" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm">
+                    <select id="f-type" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm outline-none">
                         <option value="any">Anything</option>
                         <option value="Asian">Asian</option>
                         <option value="Western">Western</option>
@@ -101,7 +111,7 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <label class="w-20 font-black text-xs uppercase leading-tight">Dietary</label>
-                    <select id="f-diet" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm">
+                    <select id="f-diet" class="flex-1 bg-white border-2 border-black rounded-lg p-2 font-bold text-sm outline-none">
                         <option value="any">No Preference</option>
                         <option value="halal">Halal Only</option>
                         <option value="vegetarian">Vegetarian Only</option>
@@ -115,20 +125,51 @@
             </button>
         </div>
 
-        <a href="https://docs.google.com/spreadsheets/d/1LPyKTNkDk7E5AXYUWGutoHHZvDzhpxtkmDbbSTKPHtw/edit" target="_blank" class="neo-card p-4 rounded-2xl flex items-center justify-between hover:opacity-90 transition-opacity" style="background-color: var(--primary);">
-            <span class="font-black text-sm uppercase text-white">Add a new spot to the sheet</span>
-            <span class="font-black text-white">↗</span>
-        </a>
+        <button onclick="toggleModal('add-modal')" class="neo-card w-full bg-white hover:bg-emerald-50 p-4 rounded-2xl flex items-center justify-between transition-colors mb-4 group">
+            <span class="font-black text-sm uppercase group-hover:text-[var(--primary)] text-left leading-tight">
+                Found a new place? <br>
+                <span class="text-[10px] opacity-60 font-bold">Suggest a new spot, don't gatekeep leh!</span>
+            </span>
+            <span class="text-3xl font-black">+</span>
+        </button>
+
+        <div class="flex justify-between items-center px-2">
+            <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8rEkvss_C8OAw0mcM-Gdjk_1u-3KvxYKjAB7vBi5m6cfn-5qtoee2aozKpY4Ib1PqVPxb3rySDGUa/pubhtml?gid=0&single=true" target="_blank" class="text-[10px] font-bold opacity-60 uppercase hover:opacity-100 italic">View Full List ↗</a>
+            <button onclick="toggleModal('feedback-modal')" class="text-[10px] font-bold opacity-60 uppercase hover:opacity-100 italic">Report Error / Feedback</button>
+        </div>
+    </div>
+
+    <div id="add-modal" class="modal-overlay" onclick="closeOnOverlay(event, 'add-modal')">
+        <div class="neo-card w-full max-w-sm p-6 rounded-2xl relative">
+            <button onclick="toggleModal('add-modal')" class="absolute top-4 right-4 font-black text-xl">✕</button>
+            <h2 class="text-xl font-black uppercase mb-4">Suggest a Spot</h2>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeuhj2rNRjuISCw-ECcQVDQmRuJGJLoUOCGP3nGZ7GBe0u4UA/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+        </div>
+    </div>
+
+    <div id="feedback-modal" class="modal-overlay" onclick="closeOnOverlay(event, 'feedback-modal')">
+        <div class="neo-card w-full max-w-sm p-6 rounded-2xl relative">
+            <button onclick="toggleModal('feedback-modal')" class="absolute top-4 right-4 font-black text-xl">✕</button>
+            <h2 class="text-xl font-black uppercase mb-4">Feedback</h2>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSckUBegUweAa5XHZpbCrVnsWBTfH40EhC2PHr7kqimubBWc_Q/viewform?embedded=true" width="100%" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+        </div>
     </div>
 
     <script>
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ8rEkvss_C8OAw0mcM-Gdjk_1u-3KvxYKjAB7vBi5m6cfn-5qtoee2aozKpY4Ib1PqVPxb3rySDGUa/pub?gid=0&single=true&output=csv";
         let foodData = [];
 
+        function toggleModal(id) {
+            document.getElementById(id).classList.toggle('active');
+        }
+
+        function closeOnOverlay(e, id) {
+            if (e.target.id === id) toggleModal(id);
+        }
+
         async function init() {
             try {
                 const response = await fetch(SHEET_CSV_URL + "&cache=" + Date.now());
-                if (!response.ok) throw new Error('Network response was not ok');
                 const csvText = await response.text();
                 const rows = csvText.split(/\r?\n/).slice(1); 
                 
@@ -144,7 +185,7 @@
 
                 document.getElementById('status-dot').innerHTML = `
                     <span class="w-2 h-2 bg-green-600 rounded-full"></span>
-                    <span class="text-[10px] font-black uppercase opacity-60">Live: ${foodData.length} Places Loaded</span>`;
+                    <span class="text-[10px] font-black uppercase opacity-60">Live: ${foodData.length} Spots</span>`;
                 
                 document.getElementById('spin-btn').disabled = false;
                 document.getElementById('chosen-name').innerText = "Makan?";
@@ -190,7 +231,6 @@
                     } else {
                         dietTag.style.display = "none";
                     }
-
                     document.getElementById('tag-loc').innerText = final.loc;
                     document.getElementById('tag-type').innerText = final.type;
                     meta.style.opacity = "1";
