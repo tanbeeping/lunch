@@ -119,10 +119,19 @@
             const fDiet = document.getElementById('f-diet').value;
 
             const pool = foodData.filter(item => {
+                // 1. Location Match
                 const lMatch = fLoc === 'any' || item.loc === fLoc;
-                const dMatch = fDiet === 'any' || item.diet === fDiet;
+                
+                // 2. Cuisine Match (Check if the string exists within the cell)
                 const tMatch = fType === 'any' || item.type.toLowerCase().includes(fType.toLowerCase());
-                return lMatch && dMatch && tMatch;
+                
+                // 3. THE FIX: Dietary Match
+                // If "any" is selected, everyone is invited.
+                // If "halal" is selected, only show items that strictly say "halal".
+                // If "vegetarian" is selected, only show items that strictly say "vegetarian".
+                const dMatch = fDiet === 'any' || item.diet === fDiet;
+
+                return lMatch && tMatch && dMatch;
             });
 
             const display = document.getElementById('chosen-name');
@@ -143,8 +152,15 @@
                     const final = pool[Math.floor(Math.random() * pool.length)];
                     display.innerText = final.name;
                     
-                    // Update meta tags with proper capitalization
-                    document.getElementById('tag-halal').innerText = final.diet.charAt(0).toUpperCase() + final.diet.slice(1);
+                    // UI FIX: Only show the dietary tag if it's not empty
+                    const dietTag = document.getElementById('tag-halal');
+                    if (final.diet && final.diet !== "") {
+                        dietTag.innerText = final.diet.charAt(0).toUpperCase() + final.diet.slice(1);
+                        dietTag.style.display = "inline-block";
+                    } else {
+                        dietTag.style.display = "none";
+                    }
+
                     document.getElementById('tag-loc').innerText = final.loc;
                     document.getElementById('tag-type').innerText = final.type;
                     meta.style.opacity = "1";
