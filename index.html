@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eh, Eat What? 🍔🍱🍜🍕🥘</title>
+    <title>Lunch Roulette 🍔🍱🍜🍕🥘</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
@@ -73,7 +73,7 @@
     <div class="max-w-md w-full">
         <div class="neo-card rounded-3xl p-8 mb-6">
             <header class="text-center mb-8">
-                <h1 class="text-4xl font-900 uppercase tracking-tighter italic leading-none">Eh, Eat What?</h1>
+                <h1 class="text-4xl font-900 uppercase tracking-tighter italic leading-none">Lunch Roulette</h1>
                 <div id="status-dot" class="inline-flex items-center gap-2 mt-2">
                     <span class="w-2 h-2 bg-gray-400 rounded-full loading-shimmer"></span>
                     <span class="text-[10px] font-black uppercase opacity-60">Syncing...</span>
@@ -121,7 +121,7 @@
             </div>
 
             <button id="spin-btn" disabled onclick="spin()" class="neo-button w-full py-4 rounded-xl uppercase tracking-widest">
-                <div class="text-2xl font-black mb-0">Spin Now</div>
+                <div class="text-2xl font-black mb-0">Spin now</div>
                 <div class="text-[10px] opacity-90 font-bold">(before the committee decides)</div>
             </button>
         </div>
@@ -129,7 +129,7 @@
         <button onclick="toggleModal('add-modal')" class="neo-card w-full bg-white hover:bg-emerald-50 p-4 rounded-2xl flex items-center justify-between transition-colors mb-4 group">
             <span class="font-black text-sm uppercase group-hover:text-[var(--primary)] text-left leading-tight">
                 Found a new place? <br>
-                <span class="text-[10px] opacity-60 font-bold">Suggest a new spot, don't gatekeep leh!</span>
+                <span class="text-[10px] opacity-60 font-bold">Share it, don't gatekeep!</span>
             </span>
             <span class="text-3xl font-black">+</span>
         </button>
@@ -143,7 +143,7 @@
     <div id="add-modal" class="modal-overlay" onclick="closeOnOverlay(event, 'add-modal')">
         <div class="neo-card w-full max-w-sm p-6 rounded-2xl relative">
             <button onclick="toggleModal('add-modal')" class="absolute top-4 right-4 font-black text-xl">✕</button>
-            <h2 class="text-xl font-black uppercase mb-4">Suggest a Spot</h2>
+            <h2 class="text-xl font-black uppercase my-4">Suggest a Spot</h2>
             <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeuhj2rNRjuISCw-ECcQVDQmRuJGJLoUOCGP3nGZ7GBe0u4UA/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
         </div>
     </div>
@@ -151,7 +151,7 @@
     <div id="feedback-modal" class="modal-overlay" onclick="closeOnOverlay(event, 'feedback-modal')">
         <div class="neo-card w-full max-w-sm p-6 rounded-2xl relative">
             <button onclick="toggleModal('feedback-modal')" class="absolute top-4 right-4 font-black text-xl">✕</button>
-            <h2 class="text-xl font-black uppercase mb-4">Feedback</h2>
+            <h2 class="text-xl font-black uppercase my-4">Feedback</h2>
             <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSckUBegUweAa5XHZpbCrVnsWBTfH40EhC2PHr7kqimubBWc_Q/viewform?embedded=true" width="100%" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
         </div>
     </div>
@@ -189,7 +189,7 @@
                     <span class="text-[10px] font-black uppercase opacity-60">Live: ${foodData.length} Spots</span>`;
                 
                 document.getElementById('spin-btn').disabled = false;
-                document.getElementById('chosen-name').innerText = "Makan?";
+                document.getElementById('chosen-name').innerText = "Eat what?";
             } catch (err) {
                 document.getElementById('chosen-name').innerText = "Sync Error!";
             }
